@@ -20,7 +20,6 @@ __DATA__
 
 @@ index.html.ep
 % layout 'default';
-% title 'Welcome';
 
 <h1 class="page-header" id="general">General</h1>
 <pre><%= $general %></pre>
@@ -45,7 +44,7 @@ __DATA__
 <html>
   <head>
     <meta charset="utf-8">
-    <title><%= title %></title>
+    <title>Perl system information</title>
     <meta content="width=device-width, initial-scale=1.0" name="viewport">
     <link rel="icon" href="/favicon.png" type="image/png" />
     <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
