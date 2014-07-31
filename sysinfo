@@ -1,0 +1,82 @@
+#!/usr/bin/env perl
+use Mojolicious::Lite;
+use Config;
+use ExtUtils::Installed;
+
+get '/' => sub {
+  my $c = shift;
+  my $inst = ExtUtils::Installed->new();
+
+  my $mods = {};
+  foreach my $mod ($inst->modules) {
+    $mods->{$mod} = $inst->version($mod);
+  }
+
+  $c->render(general => Config::myconfig, config => \%Config, modules => $mods);
+} => 'index';
+
+app->start;
+__DATA__
+
+@@ index.html.ep
+% layout 'default';
+% title 'Welcome';
+
+<h1 class="page-header" id="general">General</h1>
+<pre><%= $general %></pre>
+
+<h1 class="page-header" id="config">Config</h1>
+<pre><%= dumper($config) %></pre>
+
+<h1 class="page-header" id="env">Environment</h1>
+<pre><%= dumper(\%ENV) %></pre>
+
+<h1 class="page-header" id="http">HTTP Environment</h1>
+<pre><%= dumper($self->req->headers->to_hash) %></pre>
+
+<h1 class="page-header" id="loaded">Loaded modules</h1>
+<pre><%= dumper(\%INC) %></pre>
+
+<h1 class="page-header" id="installed">Installed modules</h1>
+<pre><%= dumper($modules) %></pre>
+
+@@ layouts/default.html.ep
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title><%= title %></title>
+    <meta content="width=device-width, initial-scale=1.0" name="viewport">
+    <link rel="icon" href="/favicon.png" type="image/png" />
+    <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css"/>
+    <script type="text/javascript" src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
+    <style type="text/css">
+      body {
+        padding-top: 50px;
+        padding-bottom: 20px;
+      }
+      pre {
+        max-height: 700px;
+      }
+    </style>
+
+  </head>
+  <body>
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <a class="navbar-brand" href="#">SysInfo</a>
+      <ul class="nav navbar-nav">
+        <li><a href="#general">General</a></li>
+        <li><a href="#config">Config</a></li>
+        <li><a href="#env">Environment</a></li>
+        <li><a href="#http">HTTP Environment</a></li>
+        <li><a href="#loaded">Loaded modules</a></li>
+        <li><a href="#installed">Installed modules</a></li>
+      </ul>
+    </nav>
+    <div class="container">
+      <%= content %>
+      <hr/>
+      <footer><p class="text-muted">&copy; Sebastian Stumpf 2014</p></footer>
+    </div>
+  </body>
+</html>
